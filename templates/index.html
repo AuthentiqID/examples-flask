@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+
+  <script src="//cdn.authentiq.io/authentiqjs/latest/authentiq.js"
+          class="authentiq-snippet"
+          data-provider-uri="{{ provider_uri }}"
+          data-client-id="{{ client_id }}"
+          data-redirect-uri="{{ redirect_uri }}"
+          {% if state %}
+            data-state="{{ state }}"
+          {% endif %}
+          {% if g.user or g.userinfo %}
+            data-signed-in="true"
+            {% if g.userinfo.given_name %}
+              data-sign-out-text="Sign out {{g.userinfo.given_name}}"
+            {% endif %}
+          {% endif %}
+          data-display="page"
+          data-response-type="code"
+          data-response-mode="query"></script>
+
+  <script>
+    // reload page on authorized so as Flask returns the /profile page
+    authentiq.subscribe('authorized', function() {
+      window.location.reload();
+    });
+
+    // move to /logout page when snippet concludes
+    authentiq.subscribe('concluded', function() {
+      window.location.replace({{ logout_uri|tojson }});
+    });
+
+    authentiq.subscribe('error', function(error) {
+      if ('console' in window) {
+        console.error(error);
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>Example Flask App</h1>
+
+  <button class="authentiq-button">
+    Sign in with Authentiq ID
+  </button>
+
+  {% if g.userinfo %}
+    <h2>Userinfo:</h2>
+
+    <code>
+      {{ g.userinfo|tojson }}
+    </code>
+  {% endif %}
+</body>
+</html>

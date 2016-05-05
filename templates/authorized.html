@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+
+  <script src="//cdn.authentiq.io/authentiqjs/latest/authentiq.js"
+          class="authentiq-snippet"
+          data-provider-uri="{{ provider_uri }}"
+          data-client-id="{{ client_id }}"
+          data-redirect-uri="{{ redirect_uri }}"
+          data-state="{{ state }}"
+          data-display="page"
+          data-response-type="code"></script>
+
+
+  {# redirect page to /index only when display=page #}
+  {% if display == 'page' %}
+    <script>
+      window.location.replace({{ redirect_to|tojson }});
+    </script>
+  {% endif %}
+</head>
+<body>
+</body>
+</html>
