@@ -50,6 +50,8 @@ REQUESTED_SCOPES = ["aq:name", "email", "aq:push"]
 PORT = 8000
 REDIRECT_URL = "http://localhost:%d/authorized" % PORT
 
+DISPLAY = "modal"
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -136,6 +138,7 @@ def index():
                            client_id=CLIENT_ID,
                            redirect_uri=REDIRECT_URL,
                            state=state,
+                           display=DISPLAY,
                            logout_uri=url_for(".logout"))
 
 
@@ -164,7 +167,7 @@ def authorized():
                                client_id=CLIENT_ID,
                                redirect_uri=REDIRECT_URL,
                                state=session.get("state"),
-                               display="modal",    # default
+                               display=DISPLAY,
                                redirect_to=url_for(".index"))
 
     try:
@@ -200,7 +203,7 @@ def authorized():
                            client_id=CLIENT_ID,
                            redirect_uri=REDIRECT_URL,
                            state=session.get("state"),
-                           display="modal",    # default
+                           display=DISPLAY,
                            redirect_to=url_for(".index"))
 
 
