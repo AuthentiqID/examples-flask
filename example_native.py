@@ -14,6 +14,7 @@ AuthentiqJS snippet or an OpenID Connect library to optimise this.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+import os
 import oauthlib
 import requests
 
@@ -36,8 +37,8 @@ TOKEN_URL = AUTHENTIQ_BASE + "token"
 USERINFO_URL = AUTHENTIQ_BASE + "userinfo"
 
 # The following app is registered at Authentiq Connect.
-CLIENT_ID = "examples-flask-native"
-CLIENT_SECRET = "ed25519"
+CLIENT_ID = os.environ.get("CLIENT_ID", "examples-flask-native")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET", "ed25519")
 
 # Personal details requested from the user. See the "scopes_supported" key in
 # the following JSON document for an up to date list of supported scopes:
