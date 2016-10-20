@@ -18,8 +18,10 @@ import datetime
 import random
 
 import jwt
+import os
 import oauthlib.oauth2.rfc6749.errors as oauth2_errors
 import requests
+
 from flask import Flask, abort, jsonify, redirect, request, session, url_for, \
     make_response
 from requests_oauthlib import OAuth2Session
@@ -40,8 +42,8 @@ TOKEN_URL = AUTHENTIQ_BASE + "token"
 USERINFO_URL = AUTHENTIQ_BASE + "userinfo"
 
 # The following app is registered at Authentiq Connect.
-CLIENT_ID = "examples-flask-basic"
-CLIENT_SECRET = "ed25519"
+CLIENT_ID = os.environ.get("CLIENT_ID", "examples-flask-native")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET", "ed25519")
 
 # Personal details requested from the user. See the "scopes_supported" key in
 # the following JSON document for an up to date list of supported scopes:
@@ -50,8 +52,11 @@ CLIENT_SECRET = "ed25519"
 #
 REQUESTED_SCOPES = ["openid", "aq:name", "email", "aq:push"]
 
+# For testing 2FA, Authentiq Connect has to able
+# to reach the `/authenticate` endpoint
+HOST = "localhost"
 PORT = 8000
-REDIRECT_URL = "http://localhost:%d/authorized" % PORT
+REDIRECT_URL = "http://%s:%d/authorized" % (HOST, PORT)
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -91,7 +96,6 @@ def index():
     # redirect_uri explicitly, though when omitted defaults will be taken
     # from the registered client.
     authentiq = OAuth2Session(
-        CLIENT_ID,
         client_id=CLIENT_ID,
         scope=REQUESTED_SCOPES,
         redirect_uri=url_for("authorized", _external=True),
@@ -279,10 +283,8 @@ def authenticate():
 if __name__ == "__main__":
 
     if app.debug:
-        import os
-
         # Allow insecure oauth2 when debugging
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
     # Explicitly set `host=localhost` in order to get the correct redirect_uri.
-    app.run(host="localhost", port=PORT)
+    app.run(host=HOST, port=PORT)

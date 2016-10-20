@@ -8,12 +8,12 @@ This repository contains two examples showing how to integrate [Authentiq Connec
 
 Assuming you have cloned this repository already, on Ubuntu 16.04, install the following packages:
 
-    sudo apt-get install python-tox python3-flask python3-requests python3-requests-oauthlib
+    sudo apt-get install python-tox python3-flask python3-requests python3-requests-oauthlib python3-jwt
 
 Or using a virtual environment:
 
     virtualenv -p /usr/bin/python3 env
-    pip install tox flask requests requests-oauthlib
+    pip install tox flask requests requests-oauthlib jwt
 
 
 ## Example 1: Plain OAuth 2.0 — `example_basic.py`
@@ -28,6 +28,7 @@ This example uses the [AuthentiqJS](https://github.com/AuthentiqID/authentiq-js)
 
 - A faster authentication flow using an OpenID Connect ID Token
 - Instant sign-out from phone using the Authentiq ID app
+
 
     python3 example_native.py
 
