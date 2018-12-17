@@ -18,9 +18,8 @@ import datetime
 import random
 
 import jwt
-import oauthlib
+import oauthlib.oauth2.rfc6749.errors as oauth2_errors
 import requests
-
 from flask import Flask, abort, jsonify, redirect, request, session, url_for, \
     make_response
 from requests_oauthlib import OAuth2Session
@@ -33,6 +32,7 @@ class Config(object):
     DEBUG = True
     TESTING = False
     SECRET_KEY = "aicahquohzieRah5ZooLoo3a"
+
 
 AUTHENTIQ_BASE = "https://connect.authentiq.io/"
 AUTHORIZE_URL = AUTHENTIQ_BASE + "authorize"
@@ -48,7 +48,7 @@ CLIENT_SECRET = "ed25519"
 #
 #   https://connect.authentiq.io/.well-known/openid-configuration
 #
-REQUESTED_SCOPES = ["aq:name", "email", "aq:push"]
+REQUESTED_SCOPES = ["openid", "aq:name", "email", "aq:push"]
 
 PORT = 8000
 REDIRECT_URL = "http://localhost:%d/authorized" % PORT
@@ -79,12 +79,12 @@ def authenticate_user(username, password):
 
 @app.route("/")
 def index():
-
     # Check if redirect_uri matches with the one registered with the
     # example client.
     assert url_for("authorized", _external=True) == REDIRECT_URL, (
-        "For this demo to work correctly, please make sure it is hosted on "
-        "localhost, so that the redirect URL is exactly " + REDIRECT_URL + "."
+            "For this demo to work correctly, please make sure it is hosted "
+            "on localhost, so that the redirect URL is exactly " +
+            REDIRECT_URL + "."
     )
 
     # Initialise an authentication session. Here we pass in scope and
@@ -117,10 +117,10 @@ def authorized():
 
     try:
         error = request.args["error"]
-        oauthlib.oauth2.raise_from_error(error, request.args)
+        oauth2_errors.raise_from_error(error, request.args)
     except KeyError:
         pass
-    except oauthlib.oauth2.OAuth2Error as e:
+    except oauth2_errors.OAuth2Error as e:
         code = e.status_code or 400
         description = "Provider returned: " + (e.description or e.error)
         abort(code, description=description)
@@ -138,7 +138,7 @@ def authorized():
         app.logger.info("Received token: %s" % token)
 
     # The incoming request looks flaky, let's not handle it further.
-    except oauthlib.oauth2.OAuth2Error as e:
+    except oauth2_errors.OAuth2Error as e:
         description = "Request to token endpoint failed: " + \
                       (e.description or e.error)
         abort(code=e.status_code or 400, description=description)
@@ -249,7 +249,6 @@ def authenticate():
     # Authentiq Connect can request to bind the token to an Authentiq ID
     # enabling that user to sign in without a password in the future.
     if authorized_party:
-
         # Mark the token as a link token.
         token["token"] = "link_token"
 
@@ -280,6 +279,7 @@ if __name__ == "__main__":
 
     if app.debug:
         import os
+
         # Allow insecure oauth2 when debugging
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 

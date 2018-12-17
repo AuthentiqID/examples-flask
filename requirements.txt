@@ -1,4 +1,5 @@
 Flask
+oauthlib
+pyjwt
 requests
 requests-oauthlib
-tox
