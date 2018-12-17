@@ -68,7 +68,7 @@ def index():
     # redirect_uri explicitly, though when omitted defaults will be taken
     # from the registered client.
     authentiq = OAuth2Session(
-        CLIENT_ID,
+        client_id=CLIENT_ID,
         scope=REQUESTED_SCOPES,
         redirect_uri=url_for("authorized", _external=True),
     )

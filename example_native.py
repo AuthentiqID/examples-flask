@@ -99,9 +99,8 @@ def requests_session():
 
         # The HTTP request to the UserInfo endpoint failed.
         except requests.exceptions.HTTPError as e:
-            abort(code=502,
-                  description="Request to userinfo endpoint failed: " +
-                              e.response.reason)
+            abort(502, description="Request to userinfo endpoint failed: " +
+                                   e.response.reason)
 
 
 @app.route("/")
@@ -121,7 +120,8 @@ def index():
         # redirect_uri explicitly, though when omitted defaults will be taken
         # from the registered client.
         authentiq = OAuth2Session(
-            CLIENT_ID,
+            client_id=CLIENT_ID,
+            scope=REQUESTED_SCOPES,
             redirect_uri=url_for("authorized", _external=True),
         )
 
@@ -135,6 +135,7 @@ def index():
     return render_template("index.html",
                            provider_uri=AUTHENTIQ_BASE,
                            client_id=CLIENT_ID,
+                           scope=" ".join(REQUESTED_SCOPES),
                            redirect_uri=REDIRECT_URL,
                            state=state,
                            display=DISPLAY,
@@ -185,7 +186,7 @@ def authorized():
     except oauth2_errors.OAuth2Error as e:
         description = "Request to token endpoint failed: " + \
                       (e.description or e.error)
-        abort(code=e.status_code or 400, description=description)
+        abort(e.status_code or 400, description=description)
 
     # The HTTP request to the token endpoint failed.
     except requests.exceptions.HTTPError as e:
