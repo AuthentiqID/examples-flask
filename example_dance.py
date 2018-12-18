@@ -30,11 +30,6 @@ class Config(object):
     SECRET_KEY = "aicahquohzieRah5ZooLoo3a"
 
 
-AUTHENTIQ_BASE = "https://connect.authentiq.io/"
-AUTHORIZE_URL = AUTHENTIQ_BASE + "authorize"
-TOKEN_URL = AUTHENTIQ_BASE + "token"
-USERINFO_URL = AUTHENTIQ_BASE + "userinfo"
-
 # The following app is registered at Authentiq Connect.
 CLIENT_ID = os.environ.get("CLIENT_ID", "examples-flask-basic")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET", "ed25519")
@@ -52,7 +47,6 @@ REDIRECT_URL = "http://localhost:%d/authorized" % PORT
 app = Flask(__name__)
 app.config.from_object(Config)
 app.wsgi_app = ProxyFix(app.wsgi_app)
-app.secret_key = "supersekrit"
 blueprint = make_authentiq_blueprint(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
