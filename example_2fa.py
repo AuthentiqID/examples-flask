@@ -11,19 +11,30 @@ As with all plain OAuth 2.0 integrations, we use the UserInfo endpoint to
 retrieve the user profile after authorization. Check out our native
 AuthentiqJS snippet or an OpenID Connect library to optimise this.
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals
+)
 
 import datetime
+import os
 import random
 
 import jwt
-import os
 import oauthlib.oauth2.rfc6749.errors as oauth2_errors
 import requests
-
-from flask import Flask, abort, jsonify, redirect, request, session, url_for, \
-    make_response
+from flask import (
+    Flask,
+    abort,
+    jsonify,
+    make_response,
+    redirect,
+    request,
+    session,
+    url_for
+)
 from requests_oauthlib import OAuth2Session
 
 
