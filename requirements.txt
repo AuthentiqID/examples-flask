@@ -1,4 +1,5 @@
 Flask
+Flask-Dance
 oauthlib
 pyjwt
 requests
